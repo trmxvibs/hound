@@ -50,7 +50,13 @@ cd hound
 bash hound.sh
 ```
 ## Change log:
-Version: 0.2: Remove Ngrok and update cloudflared tunnel
+Version: 0.2: Remove Ngrok and update cloudflared tunnel.
+
+**updated cloudflared.** 
+
+**Added more server tool's.**
+![image](https://github.com/user-attachments/assets/5a6d7da8-4c31-4c62-8b74-a37ba1190c93)
+
 
 ### Video Demo
 [![Hound Demo](https://img.youtube.com/vi/IiJRyVmITgI/0.jpg)](https://www.youtube.com/watch?v=IiJRyVmITgI)
